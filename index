@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Notion Flip Clock</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #191919;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+      Helvetica, Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .clock-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .flip-card {
+    position: relative;
+    width: 90px;
+    height: 110px;
+
+    background: #242424;
+
+    border: 1px solid #333333;
+    border-radius: 10px;
+
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.35),
+      inset 0 1px rgba(255, 255, 255, 0.03);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -3px;
+
+    color: #f1f1f1;
+
+    overflow: hidden;
+  }
+
+  /* Horizontal flip-clock divider */
+  .flip-card::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 50%;
+
+    height: 1px;
+
+    background: #111111;
+
+    box-shadow:
+      0 1px rgba(255, 255, 255, 0.04);
+
+    z-index: 3;
+  }
+
+  .number {
+    position: relative;
+    z-index: 2;
+
+    font-variant-numeric: tabular-nums;
+
+    transition:
+      transform 0.18s ease,
+      opacity 0.18s ease;
+  }
+
+  .number.flip {
+    transform: scaleY(0.15);
+    opacity: 0.25;
+  }
+
+  .separator {
+    font-size: 45px;
+    font-weight: 300;
+
+    color: #666666;
+
+    margin: 0 -2px;
+
+    transform: translateY(-4px);
+  }
+
+  .seconds-card {
+    opacity: 0.55;
+    width: 72px;
+    height: 90px;
+    font-size: 48px;
+  }
+
+  @media (max-width: 500px) {
+    .clock-wrapper {
+      gap: 6px;
+    }
+
+    .flip-card {
+      width: 68px;
+      height: 88px;
+      font-size: 48px;
+      border-radius: 8px;
+    }
+
+    .seconds-card {
+      width: 58px;
+      height: 76px;
+      font-size: 38px;
+    }
+
+    .separator {
+      font-size: 34px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="clock-wrapper">
+
+  <div class="flip-card">
+    <span class="number" id="hours">00</span>
+  </div>
+
+  <div class="separator">:</div>
+
+  <div class="flip-card">
+    <span class="number" id="minutes">00</span>
+  </div>
+
+  <div class="separator">:</div>
+
+  <div class="flip-card seconds-card">
+    <span class="number" id="seconds">00</span>
+  </div>
+
+</div>
+
+<script>
+  let previousTime = {
+    hours: "",
+    minutes: "",
+    seconds: ""
+  };
+
+  function animateNumber(element, newValue, type) {
+
+    if (previousTime[type] === newValue) {
+      return;
+    }
+
+    element.classList.add("flip");
+
+    setTimeout(() => {
+
+      element.textContent = newValue;
+
+      element.classList.remove("flip");
+
+    }, 90);
+
+    previousTime[type] = newValue;
+  }
+
+  function updateClock() {
+
+    const now = new Date();
+
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    animateNumber(
+      document.getElementById("hours"),
+      hours,
+      "hours"
+    );
+
+    animateNumber(
+      document.getElementById("minutes"),
+      minutes,
+      "minutes"
+    );
+
+    animateNumber(
+      document.getElementById("seconds"),
+      seconds,
+      "seconds"
+    );
+  }
+
+  updateClock();
+
+  setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
